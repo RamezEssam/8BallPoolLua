@@ -7,6 +7,8 @@ function love.load()
 	
 	BALL_COUNT = 16
 	
+	CUE_LENGTH = 15
+	
 	centerX, centerY = SCREEN_WIDTH/2, SCREEN_HEIGHT/2
 
 	world = love.physics.newWorld(0, 0, true)
@@ -55,7 +57,7 @@ function love.load()
         ball.body:setLinearDamping(0.7) -- Friction so they eventually stop
         ball.shape = love.physics.newCircleShape(ball.radius)
         ball.fixture = love.physics.newFixture(ball.body, ball.shape, 1)
-        ball.fixture:setRestitution(0.9) -- Make them bouncy
+        ball.fixture:setRestitution(1.0) -- Make them bouncy
         
         table.insert(objects.balls, ball)
     end
@@ -72,7 +74,7 @@ end
 
 function love.draw()
     love.graphics.setColor(0.28, 0.63, 0.05)
-    
+	
     -- Get all fixtures attached to the table body
     local fixtures = objects.table.body:getFixtures()
     
@@ -86,7 +88,18 @@ function love.draw()
     for _, b in ipairs(objects.balls) do
         love.graphics.setColor(1, 1, 1)
         love.graphics.circle("fill", b.body:getX(), b.body:getY(), b.shape:getRadius())
+		local x, y = love.mouse.getPosition()
+		if checkCollision(x, y, b) then
+			local bx, by = b.body:getPosition()
+			local dx, dy = bx - x, by - y
+			local angle = math.atan2(dy, dx)
+			local xend = bx + math.cos(angle) * (dx*dx + dy*dy) * 10
+			local yend = by + math.sin(angle) * (dx*dx + dy*dy) * 10
+			drawDottedLine(bx, by, xend, yend, 4, 5)
+		end
     end
+	
+	--drawDottedLine(10, 10, 300, 300, 4, 5)
 end
 
 function love.mousepressed(x, y, button, istouch)
