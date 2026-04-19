@@ -242,6 +242,7 @@ function generateBallSkin(number, color_r, color_g, color_b, ballFont)
     
     love.graphics.setCanvas(canvas)
     love.graphics.clear(0, 0, 0, 0)
+	love.graphics.origin()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(skinImage)
     
@@ -249,19 +250,15 @@ function generateBallSkin(number, color_r, color_g, color_b, ballFont)
 	if isNumberedBall then
 		love.graphics.setColor(0, 0, 0)
 
-		local font = ballFont
+		love.graphics.setFont(ballFont)
 		local text = tostring(number)
 
-		local tw = font:getWidth(text)
-		local th = font:getHeight()
+		local tw = ballFont:getWidth(text)
+		local th = ballFont:getHeight()
 
-		local scale = 1.5
+		local scale = 2.5
 
-		-- center AFTER scaling
-		local x = (width / 2) - (tw * scale) / 2
-		local y = (height / 2) - (th * scale) / 2
-
-		love.graphics.print(text, x, y, 0, scale, scale)
+		love.graphics.print(text, width / 2, height / 2, 0, scale, scale, tw / 2, th / 2)
 	end
     
     love.graphics.setCanvas()
